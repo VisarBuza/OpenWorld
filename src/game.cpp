@@ -2,11 +2,14 @@
 
 void Game::init() {
   state = GAME_MENU;
-  shader = Shader("../resources/shaders/vertex.vert", "../resources/shaders/fragment.frag");
+  shader = Shader("../resources/shaders/vertex.vert", "../resources/shaders/single_color.frag");
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
-
   level.load();
+  player.load("resources/assets/Objects/Deer1/12961_White-Tailed_Deer_v1_l2.obj",
+              "resources/assets/Objects/Deer1/12961_White-TailedDeer_diffuse.jpg");
+
+  terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png");
   score = 0;
 }
 
@@ -32,9 +35,10 @@ void Game::render() {
   shader.reset();
   setLighting();
   setUpTransformations();
+
   
-  level.draw(shader);
-  
+  player.draw(glm::vec3(0.0f), 0.05, -90, shader);
+
   displayScore();
 }
 

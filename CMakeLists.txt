@@ -23,6 +23,8 @@ target_sources(
     ${CMAKE_CURRENT_LIST_DIR}/src/level.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/game_object.h
     ${CMAKE_CURRENT_LIST_DIR}/src/game_object.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/terrain.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/terrain.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/route_planner.h
     ${CMAKE_CURRENT_LIST_DIR}/src/ai/route_planner.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/game.h

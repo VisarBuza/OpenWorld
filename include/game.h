@@ -14,7 +14,8 @@
 #include "model.h"
 #include "level.h"
 #include "camera.h"
-#include "game_object.h"
+#include "game_object.h"    
+#include "terrain.h"
 
 enum GameState {
     GAME_ACTIVE,
@@ -48,6 +49,7 @@ class Game {
     Model player;
     std::vector<GameObject> objects;
     Level level;
+    Terrain terrain;
     Shader shader;
     TextRenderer text;
     void displayScore();
