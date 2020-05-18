@@ -1,0 +1,25 @@
+# Blender MTL File: 'pine_tree.blend'
+# Material Count: 2
+
+newmtl Bark_rough
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd Bark_Tile.jpg
+
+newmtl leaf_pine
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd pine-c_scaled.png
+map_d pine-c_scaled.png

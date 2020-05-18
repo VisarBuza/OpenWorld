@@ -1,0 +1,35 @@
+# Blender MTL File: 'deer.blend'
+# Material Count: 3
+
+newmtl Eye
+Ns 819.607843
+Ka 1.000000 1.000000 1.000000
+Kd 0.443025 0.456376 0.406197
+Ks 0.913580 0.913580 0.913580
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Nannam\Downloads\doe-head.png
+
+newmtl body
+Ns 264.705882
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Nannam\Downloads\doe-body.png
+
+newmtl head
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\Users\Nannam\Downloads\doe-head.png
