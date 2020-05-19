@@ -12,6 +12,6 @@ layout(binding = 0) uniform sampler2D texture_diffuse;
 
 void main()
 {
-  out_color = vec4(vec3(0.5f, 0.4f, 0.2f), 1.0);
+  out_color = vec4(vec3(0.01f, 0.2f, 0.4f), 1.0);
 }
 

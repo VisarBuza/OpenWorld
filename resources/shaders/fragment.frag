@@ -61,9 +61,9 @@ void main()
   vec3 viewDir = normalize(-fragPos);
 
   vec3 result = CalculateDirLight(dirLight, norm, viewDir);
-  for(int i = 0; i < NR_GHOSTS; i++){  
-    result += CalculatePointLight(pointLights[i], norm, fragPos, viewDir);
-  }
+  // for(int i = 0; i < NR_GHOSTS; i++){  
+  //   result += CalculatePointLight(pointLights[i], norm, fragPos, viewDir);
+  // }
   result += CalculateSpotLight(spotLight, norm, fragPos, viewDir);
 
   out_color = vec4(result, 1.0);

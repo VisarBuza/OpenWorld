@@ -4,47 +4,58 @@
 #include <stb_image.h>
 #include <iostream>
 
-void Terrain::load(const char *file) {
+/** Constants for vertex attribute locations */
+constexpr auto va_position = 0;
+constexpr auto va_normal = 1;
+constexpr auto va_texcoord = 2;
+
+/** Constants for texture sampler bindings */
+constexpr auto tb_diffuse = 0;
+
+Terrain::~Terrain() noexcept
+{
+  glDeleteBuffers(1, &vbo);
+  glDeleteBuffers(1, &ebo);
+  glDeleteVertexArrays(1, &vao);
+}
+
+void Terrain::load(const char *file, const char *textureFile) {
+  texture.load_texture(textureFile);
+  readHeightMap(file);
+  setGraphicsData();
+}
+
+void Terrain::readHeightMap(const char *file) {
   int width, height, channels;
   unsigned char *image = stbi_load(file, &width, &height, &channels, STBI_rgb);
 
-  int xLength = 1080;
-  int yLength = 1080;
-
   int offset = 0;
-  for (int y = 0; y < yLength; y++) {
-    for (int x = 0; x < xLength; x++) {
-      float xRatio = x / (float)(xLength - 1);
-      float yRatio = 1.0f - (y / (float)(yLength - 1));
-      int index = (x + (y * yLength)) * 3;
-      height = calculateHeight((int)image[index]);
-      // Build our heightmap from the top down, so that our triangles are
-      // counter-clockwise.
-      float xPosition = -100.0 + (xRatio * 200);
-      float yPosition = -100.0 + (yRatio * 200);
-
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      int index = (x + (y * height)) * 3;
+      float yHeight = calculateHeight((int)image[index]);
       vertices.push_back({});
       auto &vertex = vertices.back();
-      vertex.position = glm::vec3(x, height, y);
-      vertex.normals = glm::vec3(0.0f, 1.0f, 0.0f);
-      vertex.texcoord = glm::vec2(0.0f);
+      vertex.position = glm::vec3(x - 540, yHeight, y - 540);
+      vertex.normals = calculateNormal(x, y, image);
+      vertex.texcoord = glm::vec2(x / 255.0, y / 255.0);
     }
   }
 
-  int numStripsRequired = yLength - 1;
+  int numStripsRequired = height - 1;
   int numDegensRequired = 2 * (numStripsRequired - 1);
-  int verticesPerStrip = 2 * xLength;
+  int verticesPerStrip = 2 * width;
 
-  for (int y = 0; y < yLength - 1; y++) {
+  for (int y = 0; y < height - 1; y++) {
     if (y > 0) {
-      indices.push_back(y * yLength);
+      indices.push_back(y * height);
     }
-    for (int x = 0; x < xLength; x++) {
-      indices.push_back((y * yLength) + x);
-      indices.push_back(((y + 1) * yLength) + x);
+    for (int x = 0; x < width; x++) {
+      indices.push_back((y * height) + x);
+      indices.push_back(((y + 1) * height) + x);
     }
-    if (y < yLength - 2) {
-      indices.push_back(((y + 1) * yLength) + (xLength - 1));
+    if (y < height - 2) {
+      indices.push_back(((y + 1) * height) + (width - 1));
     }
   }
 
@@ -52,7 +63,9 @@ void Terrain::load(const char *file) {
 
   /** Set index count */
   index_count = indices.size();
+}
 
+void Terrain::setGraphicsData() {
   /** Create VAO / VBO / EBO */
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
@@ -66,13 +79,15 @@ void Terrain::load(const char *file) {
   glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * indices.size(), indices.data(), GL_STATIC_DRAW);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normals));
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texcoord));
+  glVertexAttribPointer(va_position, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, position));
+  glVertexAttribPointer(va_normal, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, normals));
+  glVertexAttribPointer(va_texcoord, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, texcoord));
 
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
+  glEnableVertexAttribArray(va_position);
+  glEnableVertexAttribArray(va_normal);
+  glEnableVertexAttribArray(va_texcoord);
+
+  GFX_INFO("Generated terrain of (%u vertices).", vertices.size());
 }
 
 void Terrain::draw(Shader shader) {
@@ -86,6 +101,7 @@ void Terrain::draw(Shader shader) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBindVertexArray(vao);
 
+  texture.bind(tb_diffuse);
   glDrawElements(GL_TRIANGLE_STRIP, index_count, GL_UNSIGNED_INT, nullptr);
 
   // set everything to default
@@ -93,9 +109,27 @@ void Terrain::draw(Shader shader) {
   glActiveTexture(GL_TEXTURE0);
 }
 
+glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {
+  int index = (x - 1 + (z * 1080)) * 3;
+  float heightL = calculateHeight((int)image[index]);
+  
+  index = (x + 1 + (z * 1080)) * 3;
+  float heightR = calculateHeight((int)image[index]);
+  
+  index = (x + ((z - 1) * 1080)) * 3;
+  float heightD = calculateHeight((int)image[index]);
+  
+  index = (x  + ((z + 1) * 1080)) * 3;
+  float heightU = calculateHeight((int)image[index]);
+
+  glm::vec3 normal = glm::vec3(heightL - heightR, 2.0f, heightD - heightU);
+  normal = glm::normalize(normal);
+  return normal;
+}
+
 float Terrain::calculateHeight(int height) {
   float result = height / 255.0f;
-  result -= -0.5;
-  result *= -40;
+  height -= 0.5;
+  result *= 60;
   return result;
 }

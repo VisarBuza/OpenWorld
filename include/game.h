@@ -38,7 +38,7 @@ class Game {
     float flashlight = false;
     GameState state;
     RoutePlanner route;
-    Camera camera = Camera(glm::vec3(-1.0f, 0.0f, 13.0f));
+    Camera camera = Camera(glm::vec3(0.0f, 20.0f, 0.0f));
     void init();
     void update(float dt);
     void processInput(float dt);
