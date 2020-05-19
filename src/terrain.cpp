@@ -8,17 +8,43 @@ void Terrain::load(const char *file) {
   int width, height, channels;
   unsigned char *image = stbi_load(file, &width, &height, &channels, STBI_rgb);
 
-  for (int i = 0; i < width; i++) {
-    for (int j = 0; j < height; j++) {
-      vertices.push_back({});
-      indices.push_back(indices.size());
-      int index = (j + (i * width)) * 3;
-      float height = calculateHeight((int)image[index]);
+  int xLength = 1080;
+  int yLength = 1080;
 
+  int offset = 0;
+  for (int y = 0; y < yLength; y++) {
+    for (int x = 0; x < xLength; x++) {
+      float xRatio = x / (float)(xLength - 1);
+      float yRatio = 1.0f - (y / (float)(yLength - 1));
+      int index = (x + (y * yLength)) * 3;
+      height = calculateHeight((int)image[index]);
+      // Build our heightmap from the top down, so that our triangles are
+      // counter-clockwise.
+      float xPosition = -100.0 + (xRatio * 200);
+      float yPosition = -100.0 + (yRatio * 200);
+
+      vertices.push_back({});
       auto &vertex = vertices.back();
-      vertex.position = glm::vec3(j, height, i);
+      vertex.position = glm::vec3(x, height, y);
       vertex.normals = glm::vec3(0.0f, 1.0f, 0.0f);
-      vertex.texcoord = glm::vec2(0.0f, 0.0f);
+      vertex.texcoord = glm::vec2(0.0f);
+    }
+  }
+
+  int numStripsRequired = yLength - 1;
+  int numDegensRequired = 2 * (numStripsRequired - 1);
+  int verticesPerStrip = 2 * xLength;
+
+  for (int y = 0; y < yLength - 1; y++) {
+    if (y > 0) {
+      indices.push_back(y * yLength);
+    }
+    for (int x = 0; x < xLength; x++) {
+      indices.push_back((y * yLength) + x);
+      indices.push_back(((y + 1) * yLength) + x);
+    }
+    if (y < yLength - 2) {
+      indices.push_back(((y + 1) * yLength) + (xLength - 1));
     }
   }
 
@@ -60,8 +86,8 @@ void Terrain::draw(Shader shader) {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBindVertexArray(vao);
 
-  glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-  
+  glDrawElements(GL_TRIANGLE_STRIP, index_count, GL_UNSIGNED_INT, nullptr);
+
   // set everything to default
   glBindVertexArray(0);
   glActiveTexture(GL_TEXTURE0);

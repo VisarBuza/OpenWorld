@@ -36,7 +36,7 @@ void Game::render() {
   setLighting();
   setUpTransformations();
 
-  
+  terrain.draw(shader);
   player.draw(glm::vec3(0.0f), 0.05, -90, shader);
 
   displayScore();
