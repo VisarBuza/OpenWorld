@@ -199,7 +199,7 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
   view = glm::rotate(view, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
   shader.setMat4("view", view);
   shader.setMat4("projection", projection);
-  shader.setFloat("blendFactor", 0.5);
+  shader.setFloat("blendFactor", blendFactor);
   rotation += 0.03;
   if (rotation >= 360) rotation = 0;
   // skybox cube
@@ -212,6 +212,11 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
   glBindVertexArray(0);
   glDepthFunc(GL_LESS);
   glDepthMask(GL_TRUE);
+}
+
+void Terrain::update(float dt) {
+  time += dt;
+  blendFactor = glm::sin(time / 8) / 2 + 0.5;
 }
 
 glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {

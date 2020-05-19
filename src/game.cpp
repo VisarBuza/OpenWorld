@@ -15,7 +15,7 @@ void Game::init() {
 }
 
 void Game::update(float dt) {
-  if (score == 320) state = GAME_WIN;  // Hard coded cuz I'm lazy :)
+  terrain.update(dt);
 }
 
 void Game::processInput(float dt) {

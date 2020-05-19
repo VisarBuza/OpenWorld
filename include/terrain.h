@@ -28,6 +28,7 @@ class Terrain {
   void loadSkybox();
   void draw(Shader shader);
   void drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection);
+  void update(float dt);
 
  private:
   unsigned int vbo{};
@@ -46,6 +47,7 @@ class Terrain {
   float heightData[108][108];
   float rotation = 0;
   float time = 0;
+  float blendFactor = 0;
 
   float calculateHeight(int height);
   void readHeightMap(const char *file);
