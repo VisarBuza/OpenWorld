@@ -51,12 +51,22 @@ float skyboxVertices[] = {
 
 std::vector<std::string> faces
 {
-  "resources/assets/Textures/skybox/browncloud_rt.jpg",
-  "resources/assets/Textures/skybox/browncloud_lf.jpg",
-  "resources/assets/Textures/skybox/browncloud_up.jpg",
-  "resources/assets/Textures/skybox/browncloud_dn.jpg",
-  "resources/assets/Textures/skybox/browncloud_ft.jpg",
-  "resources/assets/Textures/skybox/browncloud_bk.jpg"
+  "resources/assets/Textures/skybox/right.png",
+  "resources/assets/Textures/skybox/left.png",
+  "resources/assets/Textures/skybox/top.png",
+  "resources/assets/Textures/skybox/bottom.png",
+  "resources/assets/Textures/skybox/back.png",
+  "resources/assets/Textures/skybox/front.png"
+};
+
+std::vector<std::string> facesNight
+{
+  "resources/assets/Textures/skybox/nightRight.png",
+  "resources/assets/Textures/skybox/nightLeft.png",
+  "resources/assets/Textures/skybox/nightTop.png",
+  "resources/assets/Textures/skybox/nightBottom.png",
+  "resources/assets/Textures/skybox/nightBack.png",
+  "resources/assets/Textures/skybox/nightFront.png"
 };
 
 /** Constants for vertex attribute locations */
@@ -85,14 +95,16 @@ void Terrain::readHeightMap(const char *file) {
   unsigned char *image = stbi_load(file, &width, &height, &channels, STBI_rgb);
 
   int offset = 0;
-  for (int y = 0; y < height; y++) {
+  for (int z = 0; z < height; z++) {
     for (int x = 0; x < width; x++) {
-      int index = (x + (y * height)) * 3;
+      int index = (x + (z * height)) * 3;
       float yHeight = calculateHeight((int)image[index]);
+      
+
       vertices.push_back({});
       auto &vertex = vertices.back();
-      vertex.position = glm::vec3(x - 540, yHeight, y - 540);
-      vertex.normals = calculateNormal(x, y, image);
+      vertex.position = glm::vec3(x - 540, yHeight, z - 540);
+      vertex.normals = calculateNormal(x, z, image);
       vertex.texcoord = glm::vec2(((int)image[index])/ 255.0, 0);
     }
   }
@@ -165,7 +177,8 @@ void Terrain::draw(Shader shader) {
 }
 
 void Terrain::loadSkybox() {
-  cubemapTexture = texture.loadCubeMap(faces);
+  cubemapTextureDay = texture.loadCubeMap(faces);
+  cubeMapTextureNight = texture.loadCubeMap(facesNight);
 
   glGenVertexArrays(1, &skyboxVAO);
   glGenBuffers(1, &skyboxVBO);
@@ -177,19 +190,28 @@ void Terrain::loadSkybox() {
 }
 
 void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
+  glDepthMask(GL_FALSE);
+  glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
   shader.use();
   shader.setInt("skybox", 0);
-  glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+  shader.setInt("skybox2", 1);
   view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
+  view = glm::rotate(view, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
   shader.setMat4("view", view);
   shader.setMat4("projection", projection);
+  shader.setFloat("blendFactor", 0.5);
+  rotation += 0.03;
+  if (rotation >= 360) rotation = 0;
   // skybox cube
   glBindVertexArray(skyboxVAO);
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTextureDay);
+  glActiveTexture(GL_TEXTURE1);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTextureNight);
   glDrawArrays(GL_TRIANGLES, 0, 36);
   glBindVertexArray(0);
   glDepthFunc(GL_LESS);
+  glDepthMask(GL_TRUE);
 }
 
 glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {
@@ -214,5 +236,8 @@ float Terrain::calculateHeight(int height) {
   float result = height / 255.0f;
   height -= 0.5;
   result *= 60;
+  if (result < 10) {
+    result = 10;
+  }
   return result;
 }

@@ -35,12 +35,18 @@ class Terrain {
   unsigned int ebo{};
   unsigned int skyboxVBO{};
   unsigned int skyboxVAO{};
-  unsigned int cubemapTexture{};
+  unsigned int cubemapTextureDay{};
+  unsigned int cubeMapTextureNight{};
+
   Texture texture;
 
   int index_count;
   std::vector<Vertex> vertices{};
   std::vector<unsigned> indices{};
+  float heightData[108][108];
+  float rotation = 0;
+  float time = 0;
+
   float calculateHeight(int height);
   void readHeightMap(const char *file);
   void setGraphicsData();
