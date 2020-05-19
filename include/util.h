@@ -27,7 +27,7 @@ GLFWwindow* initialize_glfw_and_gl(int width, int height)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Open a window and create its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(width, height, "Pacman 3D", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(width, height, "3D Landscape", nullptr, nullptr);
     if (window == nullptr)
     {
         GFX_ERROR("Failed to open GLFW window.\n");

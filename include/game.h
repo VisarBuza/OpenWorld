@@ -12,7 +12,6 @@
 #include "text_renderer.h"
 #include "route_planner.h"
 #include "model.h"
-#include "level.h"
 #include "camera.h"
 #include "game_object.h"    
 #include "terrain.h"
@@ -48,9 +47,9 @@ class Game {
     int view = 0;
     Model player;
     std::vector<GameObject> objects;
-    Level level;
     Terrain terrain;
     Shader shader;
+    Shader skyboxShader;
     TextRenderer text;
     void displayScore();
     void setLighting();

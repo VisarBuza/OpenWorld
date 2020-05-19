@@ -3,13 +3,14 @@
 void Game::init() {
   state = GAME_MENU;
   shader = Shader("../resources/shaders/vertex.vert", "../resources/shaders/fragment.frag");
+  skyboxShader = Shader("../resources/shaders/skybox/skybox.vert", "../resources/shaders/skybox/skybox.frag");
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
-  level.load();
   player.load("resources/assets/Objects/Deer1/12961_White-Tailed_Deer_v1_l2.obj",
               "resources/assets/Objects/Deer1/12961_White-TailedDeer_diffuse.jpg");
 
-  terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/textures/grass.jpg");
+  terrain.load("resources/assets/HeightMaps/Snaasa_HeightMapLow.png", "resources/assets/Textures/terrain.jpeg");
+  terrain.loadSkybox();
   score = 0;
 }
 
@@ -35,10 +36,10 @@ void Game::render() {
   shader.reset();
   setLighting();
   setUpTransformations();
-
   terrain.draw(shader);
-  player.draw(glm::vec3(0.0f), 0.05, -90, shader);
-
+  player.draw(glm::vec3(0.0f, 10.0f, -3.0f), .05, -90, shader);
+  auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
+  terrain.drawSkybox(skyboxShader, camera.GetFirstPersonView(), projection);
   displayScore();
 }
 
@@ -76,7 +77,7 @@ void Game::setUpTransformations() {
 }
 
 void Game::setLighting() {
-  shader.setDirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.0f), glm::vec3(0.35f), glm::vec3(0.5f));
+  shader.setDirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.3f), glm::vec3(.8f), glm::vec3(1.0f));
   shader.setSpotLight(camera.Position, camera.Front);
   shader.toggleFlashlight(flashlight);
 }
@@ -88,16 +89,16 @@ void Game::displayScore() {
 }
 
 void Game::checkCollision(float dt) {
-  for (auto &tile : level.grid) {
-    if (tile.second) {
-      if (glm::distance(camera.Position, glm::vec3(tile.first.first, 0.0f, tile.first.second)) <= 0.7) {
-        if (keys[GLFW_KEY_W]) camera.ProcessKeyboard(BACKWARD, dt);
-        if (keys[GLFW_KEY_S]) camera.ProcessKeyboard(FORWARD, dt);
-        if (keys[GLFW_KEY_A]) camera.ProcessKeyboard(RIGHT, dt);
-        if (keys[GLFW_KEY_D]) camera.ProcessKeyboard(LEFT, dt);
-      }
-    }
-  }
+  // for (auto &tile : level.grid) {
+  //   if (tile.second) {
+  //     if (glm::distance(camera.Position, glm::vec3(tile.first.first, 0.0f, tile.first.second)) <= 0.7) {
+  //       if (keys[GLFW_KEY_W]) camera.ProcessKeyboard(BACKWARD, dt);
+  //       if (keys[GLFW_KEY_S]) camera.ProcessKeyboard(FORWARD, dt);
+  //       if (keys[GLFW_KEY_A]) camera.ProcessKeyboard(RIGHT, dt);
+  //       if (keys[GLFW_KEY_D]) camera.ProcessKeyboard(LEFT, dt);
+  //     }
+  //   }
+  // }
 }
 
 void Game::drawPlayer() {

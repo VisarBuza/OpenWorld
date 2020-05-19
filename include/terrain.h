@@ -25,12 +25,17 @@ class Terrain {
   };
 
   void load(const char *file, const char *textureFile);
+  void loadSkybox();
   void draw(Shader shader);
+  void drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection);
 
  private:
   unsigned int vbo{};
   unsigned int vao{};
   unsigned int ebo{};
+  unsigned int skyboxVBO{};
+  unsigned int skyboxVAO{};
+  unsigned int cubemapTexture{};
   Texture texture;
 
   int index_count;

@@ -37,6 +37,8 @@ class Texture {
    */
   void bind(uint32_t binding);
 
+  unsigned int loadCubeMap(std::vector<std::string> faces);
+
   /**
    * Implicit conversion so we can use in place of OpenGL handles
    */

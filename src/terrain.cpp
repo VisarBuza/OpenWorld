@@ -4,6 +4,61 @@
 #include <stb_image.h>
 #include <iostream>
 
+float skyboxVertices[] = {
+    // positions          
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f
+};
+
+std::vector<std::string> faces
+{
+  "resources/assets/Textures/skybox/browncloud_rt.jpg",
+  "resources/assets/Textures/skybox/browncloud_lf.jpg",
+  "resources/assets/Textures/skybox/browncloud_up.jpg",
+  "resources/assets/Textures/skybox/browncloud_dn.jpg",
+  "resources/assets/Textures/skybox/browncloud_ft.jpg",
+  "resources/assets/Textures/skybox/browncloud_bk.jpg"
+};
+
 /** Constants for vertex attribute locations */
 constexpr auto va_position = 0;
 constexpr auto va_normal = 1;
@@ -38,7 +93,7 @@ void Terrain::readHeightMap(const char *file) {
       auto &vertex = vertices.back();
       vertex.position = glm::vec3(x - 540, yHeight, y - 540);
       vertex.normals = calculateNormal(x, y, image);
-      vertex.texcoord = glm::vec2(x / 255.0, y / 255.0);
+      vertex.texcoord = glm::vec2(((int)image[index])/ 255.0, 0);
     }
   }
 
@@ -107,6 +162,34 @@ void Terrain::draw(Shader shader) {
   // set everything to default
   glBindVertexArray(0);
   glActiveTexture(GL_TEXTURE0);
+}
+
+void Terrain::loadSkybox() {
+  cubemapTexture = texture.loadCubeMap(faces);
+
+  glGenVertexArrays(1, &skyboxVAO);
+  glGenBuffers(1, &skyboxVBO);
+  glBindVertexArray(skyboxVAO);
+  glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+}
+
+void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
+  shader.use();
+  shader.setInt("skybox", 0);
+  glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+  view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
+  shader.setMat4("view", view);
+  shader.setMat4("projection", projection);
+  // skybox cube
+  glBindVertexArray(skyboxVAO);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+  glDrawArrays(GL_TRIANGLES, 0, 36);
+  glBindVertexArray(0);
+  glDepthFunc(GL_LESS);
 }
 
 glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {
