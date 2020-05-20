@@ -164,6 +164,7 @@ void Terrain::draw(Shader shader) {
   shader.setDirLight(direction, ambient, diffuse, specular);
   shader.setMat4("model", model);
   shader.setMat3("normal_matrix", normal_matrix);
+  shader.setFloat("density", blendFactor  * 7 /1000);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -201,7 +202,6 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
   view = glm::rotate(view, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
   shader.setMat4("view", view);
   shader.setMat4("projection", projection);
-  shader.setFloat("blendFactor", blendFactor);
   rotation += 0.03;
   if (rotation >= 360) rotation = 0;
   // skybox cube
@@ -226,8 +226,8 @@ void Terrain::update(float dt) {
 }
 
 float Terrain::getHeight(float worldX, float worldZ) {
-  int terrainX = (int)worldX;
-  int terrainZ = (int)worldZ;
+  int terrainX = (int)floor(worldX);
+  int terrainZ = (int)floor(worldZ);
   return heights[std::make_pair(terrainX, terrainZ)];
 }
 

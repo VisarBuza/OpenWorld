@@ -8,7 +8,7 @@ void Game::init() {
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
   tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj", "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
-  terrain.load("resources/assets/HeightMaps/Snaasa_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
+  terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
   terrain.loadSkybox();
   setTrees();
   score = 0;
