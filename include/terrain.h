@@ -48,6 +48,10 @@ class Terrain {
   float rotation = 0;
   float time = 0;
   float blendFactor = 0;
+  glm::vec3 ambient{};
+  glm::vec3 diffuse{};
+  glm::vec3 specular{};
+  glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f);
 
   float calculateHeight(int height);
   void readHeightMap(const char *file);

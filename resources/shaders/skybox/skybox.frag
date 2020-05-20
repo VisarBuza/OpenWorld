@@ -9,7 +9,7 @@ uniform float blendFactor;
 uniform vec3 fogColor;
 
 const float lowerLimit = 0.0;
-const float upperLimit = 0.5;
+const float upperLimit = 0.8;
 
 void main()
 {    
