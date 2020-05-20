@@ -1,5 +1,5 @@
 #include "game.h"
-#include <stdlib.h> 
+#include <stdlib.h>
 
 void Game::init() {
   state = GAME_MENU;
@@ -8,7 +8,9 @@ void Game::init() {
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
   lamp.load("resources/assets/Objects/Lamp/lamp.obj", "resources/assets/Objects/Lamp/lamp.png");
-  tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj", "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
+  tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj",
+            "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
+  player.load("resources/assets/Objects/Player/person.obj", "resources/assets/Objects/Player/playerTexture.png");
   terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
   terrain.loadSkybox();
   setTrees();
@@ -18,6 +20,7 @@ void Game::init() {
 
 void Game::update(float dt) {
   terrain.update(dt);
+  camera.Position.y = terrain.getHeight(camera.Position.x, camera.Position.z) + 2;
 }
 
 void Game::processInput(float dt) {
@@ -39,6 +42,7 @@ void Game::render() {
   setLighting();
   setUpTransformations();
   terrain.draw(shader);
+  player.draw(glm::vec3(0, terrain.getHeight(0, 0), 0), 0.2, 0, shader);
   drawTrees();
   drawLamps();
   auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
@@ -103,7 +107,6 @@ void Game::checkCollision(float dt) {
   // }
 }
 
-
 void Game::setTrees() {
   int z = -400;
   int x = -400;
@@ -138,18 +141,19 @@ void Game::setLamps() {
 }
 
 void Game::drawTrees() {
-  for(auto &pos : treePos) {
-    tree.draw(pos, 0.03, -90, shader);
+  for (auto &pos : treePos) {
+    tree.draw(pos, 0.01, -90, shader);
   }
 }
 
 void Game::drawLamps() {
   int index = 0;
-  for(auto &pos : lampPos) {
-    lamp.draw(pos, 0.6, 0, shader);
+  for (auto &pos : lampPos) {
+    lamp.draw(pos, 0.3, 0, shader);
     if (index < 10) {
-      shader.setPointLights(glm::vec3(pos.x, pos.y + 0.5, pos.z), glm::vec3(index / 10, 1 - (index / 10), 0.0), index++);
-    } 
+      shader.setPointLights(glm::vec3(pos.x, pos.y + 0.5, pos.z), glm::vec3(index / 10, 1 - (index / 10), 0.0),
+                            index++);
+    }
     if (index == 10) {
       break;
     }

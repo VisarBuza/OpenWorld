@@ -38,6 +38,7 @@ class Game {
     GameState state;
     RoutePlanner route;
     Camera camera = Camera(glm::vec3(0.0f, 10.0f, 0.0f));
+
     void init();
     void update(float dt);
     void processInput(float dt);
@@ -47,11 +48,14 @@ class Game {
     int view = 0;
     Model lamp;
     Model tree;
+    Model player;
     std::vector<GameObject> objects;
     Terrain terrain;
+    
     Shader shader;
     Shader skyboxShader;
     TextRenderer text;
+    
     void displayScore();
     void setLighting();
     void setUpTransformations();
