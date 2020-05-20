@@ -1,4 +1,5 @@
 #include "game.h"
+#include <stdlib.h> 
 
 void Game::init() {
   state = GAME_MENU;
@@ -6,11 +7,10 @@ void Game::init() {
   skyboxShader = Shader("../resources/shaders/skybox/skybox.vert", "../resources/shaders/skybox/skybox.frag");
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
-  player.load("resources/assets/Objects/Deer1/12961_White-Tailed_Deer_v1_l2.obj",
-              "resources/assets/Objects/Deer1/12961_White-TailedDeer_diffuse.jpg");
-
-  terrain.load("resources/assets/HeightMaps/Randsf_HeightMapLow.png", "resources/assets/Textures/terrain.jpeg");
+  tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj", "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
+  terrain.load("resources/assets/HeightMaps/Snaasa_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
   terrain.loadSkybox();
+  setTrees();
   score = 0;
 }
 
@@ -37,8 +37,7 @@ void Game::render() {
   setLighting();
   setUpTransformations();
   terrain.draw(shader);
-  float temp = terrain.getHeight(0, -3);
-  player.draw(glm::vec3(0.0f, temp, -3.0f), .05, -90, shader);
+  drawTrees();
   auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
   terrain.drawSkybox(skyboxShader, camera.GetFirstPersonView(), projection);
 }
@@ -104,5 +103,28 @@ void Game::checkCollision(float dt) {
 void Game::drawPlayer() {
   if (view != FIRST_PERSON) {
     player.draw(camera.Position, 0.06, 0, shader);
+  }
+}
+
+void Game::setTrees() {
+  int count = 100;
+  int z = -400;
+  int x = -400;
+  while (z < 400) {
+    x = -300;
+    while (x < 400) {
+      float height = terrain.getHeight(x, z);
+      if (height > -35 && height < -5) {
+        treePos.push_back(glm::vec3(x, height, z));
+      }
+      x += 40;
+    }
+    z += 40;
+  }
+}
+
+void Game::drawTrees() {
+  for(auto &pos : treePos) {
+    tree.draw(pos, 0.03, -90, shader);
   }
 }

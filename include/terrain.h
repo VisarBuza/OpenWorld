@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 class Terrain {
  public:
@@ -30,7 +31,7 @@ class Terrain {
   void drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection);
   void update(float dt);
 
-  float getHeight(float x, float z);
+  float getHeight(float worldX, float worldZ);
 
  private:
   unsigned int vbo{};
@@ -46,7 +47,7 @@ class Terrain {
   int index_count;
   std::vector<Vertex> vertices{};
   std::vector<unsigned> indices{};
-  float *heightData = new float[1081 * 1081];
+  std::map<std::pair<int, int>, float> heights;
   float rotation = 0;
   float time = 0;
   float blendFactor = 0;

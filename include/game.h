@@ -37,7 +37,7 @@ class Game {
     float flashlight = false;
     GameState state;
     RoutePlanner route;
-    Camera camera = Camera(glm::vec3(0.0f, 20.0f, 0.0f));
+    Camera camera = Camera(glm::vec3(0.0f, 10.0f, 0.0f));
     void init();
     void update(float dt);
     void processInput(float dt);
@@ -46,6 +46,7 @@ class Game {
   private:
     int view = 0;
     Model player;
+    Model tree;
     std::vector<GameObject> objects;
     Terrain terrain;
     Shader shader;
@@ -56,6 +57,9 @@ class Game {
     void setUpTransformations();
     void checkCollision(float dt);
     void drawPlayer();
+    void drawTrees();
+    void setTrees();
+    std::vector<glm::vec3> treePos;
 };
 
 #endif

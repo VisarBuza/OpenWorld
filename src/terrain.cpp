@@ -82,7 +82,6 @@ Terrain::~Terrain() noexcept
   glDeleteBuffers(1, &vbo);
   glDeleteBuffers(1, &ebo);
   glDeleteVertexArrays(1, &vao);
-  // delete[] heightData;
 }
 
 void Terrain::load(const char *file, const char *textureFile) {
@@ -95,16 +94,12 @@ void Terrain::readHeightMap(const char *file) {
   int width, height, channels;
   unsigned char *image = stbi_load(file, &width, &height, &channels, STBI_rgb);
   
-  int offset = 0;
   for (int z = 0; z < height; z++) {
     for (int x = 0; x < width; x++) {
       int index = (x + (z * height));
       float yHeight = calculateHeight((int)image[index * 3]);
-      
-      if (index < 1081 * 1081) {
-        heightData[index] = yHeight;
-      }
-
+      // heightData[index] = yHeight;
+      heights.emplace(std::make_pair(x - 540, z - 540), yHeight);
       vertices.push_back({});
       auto &vertex = vertices.back();
       vertex.position = glm::vec3(x - 540, yHeight, z - 540);
@@ -230,27 +225,23 @@ void Terrain::update(float dt) {
   direction = glm::vec3(0.0f, glm::sin(time / 8) , glm::cos(time / 8));
 }
 
-float Terrain::getHeight(float x, float z) {
-  int tempX = (int)floor(x);
-  int tempZ = (int)floor(z);
-  int index = (tempX + 540 + (tempZ + 540  * 1081)); 
-  if (index < 1081 * 1081 && index >= 0) {
-    return heightData[index];
-  }
-  return 0;
+float Terrain::getHeight(float worldX, float worldZ) {
+  int terrainX = (int)worldX;
+  int terrainZ = (int)worldZ;
+  return heights[std::make_pair(terrainX, terrainZ)];
 }
 
 glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {
-  int index = (x - 1 + (z * 1080)) * 3;
+  int index = (x - 1 + (z * 1081)) * 3;
   float heightL = calculateHeight((int)image[index]);
   
-  index = (x + 1 + (z * 1080)) * 3;
+  index = (x + 1 + (z * 1081)) * 3;
   float heightR = calculateHeight((int)image[index]);
   
-  index = (x + ((z - 1) * 1080)) * 3;
+  index = (x + ((z - 1) * 1081)) * 3;
   float heightD = calculateHeight((int)image[index]);
   
-  index = (x  + ((z + 1) * 1080)) * 3;
+  index = (x  + ((z + 1) * 1081)) * 3;
   float heightU = calculateHeight((int)image[index]);
 
   glm::vec3 normal = glm::vec3(heightL - heightR, 2.0f, heightD - heightU);
@@ -260,10 +251,10 @@ glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {
 
 float Terrain::calculateHeight(int height) {
   float result = height / 255.0f;
-  height -= 0.5;
-  result *= 60;
-  if (result < 10) {
-    result = 10;
+  result -= 0.5;
+  result *= 100;
+  if (result < -36) {
+    result = -36;
   }
   return result;
 }
