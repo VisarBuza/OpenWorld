@@ -12,7 +12,7 @@
 #include "model.h"
 
 class GameObject {
- private:
+ protected:
   int id;
   std::unique_ptr<Model> model;
   glm::vec3 position;
@@ -27,15 +27,11 @@ class GameObject {
   void rotate();
 
  public:
-  float deltaTime = 0;
-  float searchTime;
-  std::vector<std::pair<int, int>> path;
-  GameObject(int id, std::string modelPath, std::string texturePath, glm::vec3 position, glm::vec3 color, float searchTime);
-  void draw(Shader shader);
-  void update(float dt);
+  GameObject(int id, std::string modelPath, std::string texturePath, glm::vec3 position);
+  virtual void draw(Shader shader) = 0;
+  virtual void update(float dt) = 0;
 
   void setPosition(const glm::vec3 position) { this->position = position; }
-
   glm::vec3 getPosition() const { return this->position; }
 };
 

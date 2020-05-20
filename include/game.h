@@ -49,6 +49,8 @@ class Game {
     Model lamp;
     Model tree;
     Model player;
+    Model duck;
+    Model eagle;
     std::vector<GameObject> objects;
     Terrain terrain;
     

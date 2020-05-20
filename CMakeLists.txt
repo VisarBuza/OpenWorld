@@ -14,26 +14,28 @@ find_package(Freetype REQUIRED)
 target_sources(
     ${PROJECT_NAME}
     PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/include/util.h
+    ${CMAKE_CURRENT_LIST_DIR}/include/config.h
     # ${CMAKE_CURRENT_LIST_DIR}/include/shader.h
     # ${CMAKE_CURRENT_LIST_DIR}/include/camera.h
-    # ${CMAKE_CURRENT_LIST_DIR}/include/model.h
     ${CMAKE_CURRENT_LIST_DIR}/include/text_renderer.h
     ${CMAKE_CURRENT_LIST_DIR}/src/rendering/text_renderer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/level.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/level.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/game_object.h
     ${CMAKE_CURRENT_LIST_DIR}/src/game_object.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/eagle.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/eagle.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/moose.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/moose.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/terrain.h
     ${CMAKE_CURRENT_LIST_DIR}/src/terrain.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/route_planner.h
     ${CMAKE_CURRENT_LIST_DIR}/src/ai/route_planner.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/game.h
     ${CMAKE_CURRENT_LIST_DIR}/src/game.cpp
+    # ${CMAKE_CURRENT_LIST_DIR}/include/model.h
     ${CMAKE_CURRENT_LIST_DIR}/src/rendering/model.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/texture.h
-    ${CMAKE_CURRENT_LIST_DIR}/include/util.h
     ${CMAKE_CURRENT_LIST_DIR}/src/rendering/texture.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/config.h
     ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
 
     ${CMAKE_CURRENT_LIST_DIR}/src/imgui/imconfig.h
