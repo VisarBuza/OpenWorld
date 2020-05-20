@@ -53,7 +53,7 @@ std::vector<std::string> faces
 {
   "resources/assets/Textures/skybox/right.png",
   "resources/assets/Textures/skybox/left.png",
-  "resources/assets/Textures/skybox/top.png",
+  "resources/assets/Textures/skybox/top.png", 
   "resources/assets/Textures/skybox/bottom.png",
   "resources/assets/Textures/skybox/back.png",
   "resources/assets/Textures/skybox/front.png"
@@ -158,6 +158,8 @@ void Terrain::setGraphicsData() {
 }
 
 void Terrain::draw(Shader shader) {
+  shader.use();
+  shader.setVec3("skyColor", glm::vec3(0.5f));
   auto model = glm::mat4(1.0f);
   auto normal_matrix = glm::mat3(model);
 
@@ -195,6 +197,7 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
   shader.use();
   shader.setInt("skybox", 0);
   shader.setInt("skybox2", 1);
+  shader.setVec3("fogColor", glm::vec3(0.5f));
   view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
   view = glm::rotate(view, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
   shader.setMat4("view", view);
