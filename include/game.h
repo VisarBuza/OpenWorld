@@ -51,6 +51,7 @@ class Game {
     Model player;
     Model duck;
     Model eagle;
+    Model moose;
     std::vector<GameObject> objects;
     Terrain terrain;
     
@@ -61,6 +62,9 @@ class Game {
     void displayScore();
     void setLighting();
     void setUpTransformations();
+    void loadModels();
+    void loadTerrain();
+    void loadShaders();
     void checkCollision(float dt);
     void drawPlayer();
     void drawTrees();

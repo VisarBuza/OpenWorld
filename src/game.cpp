@@ -3,17 +3,9 @@
 
 void Game::init() {
   state = GAME_MENU;
-  shader = Shader("../resources/shaders/vertex.vert", "../resources/shaders/fragment.frag");
-  skyboxShader = Shader("../resources/shaders/skybox/skybox.vert", "../resources/shaders/skybox/skybox.frag");
-  text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
-  text.load("resources/fonts/ocraext.TTF", 24);
-  lamp.load("resources/assets/Objects/Lamp/lamp.obj", "resources/assets/Objects/Lamp/lamp.png");
-  eagle.load("resources/assets/Objects/Eagle/Eagle02.obj", "resources/assets/Objects/Eagle/Eagle02.png");
-  tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj",
-            "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
-  player.load("resources/assets/Objects/Player/person.obj", "resources/assets/Objects/Player/playerTexture.png");
-  terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
-  terrain.loadSkybox();
+  loadShaders();
+  loadModels();
+  loadTerrain();
   setTrees();
   setLamps();
   score = 0;
@@ -48,7 +40,6 @@ void Game::render() {
         glm::vec3(camera.Position.x, terrain.getHeight(camera.Position.x, camera.Position.z), camera.Position.z), 0.2,
         0, shader);
   }
-  eagle.draw(glm::vec3(0, terrain.getHeight(0,0), 0), 0.05, 0, shader);
   drawTrees();
   drawLamps();
   auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
@@ -101,16 +92,31 @@ void Game::displayScore() {
 }
 
 void Game::checkCollision(float dt) {
-  // for (auto &tile : level.grid) {
-  //   if (tile.second) {
-  //     if (glm::distance(camera.Position, glm::vec3(tile.first.first, 0.0f, tile.first.second)) <= 0.7) {
-  //       if (keys[GLFW_KEY_W]) camera.ProcessKeyboard(BACKWARD, dt);
-  //       if (keys[GLFW_KEY_S]) camera.ProcessKeyboard(FORWARD, dt);
-  //       if (keys[GLFW_KEY_A]) camera.ProcessKeyboard(RIGHT, dt);
-  //       if (keys[GLFW_KEY_D]) camera.ProcessKeyboard(LEFT, dt);
-  //     }
-  //   }
-  // }
+  
+}
+
+void Game::loadModels() {
+  lamp.load("resources/assets/Objects/Lamp/lamp.obj", "resources/assets/Objects/Lamp/lamp.png");
+  tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj",
+            "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
+  player.load("resources/assets/Objects/Player/person.obj", "resources/assets/Objects/Player/playerTexture.png");
+  eagle.load("resources/assets/Objects/Eagle/Eagle02.obj", "resources/assets/Objects/Eagle/Eagle02.png");
+  moose.load("resources/assets/Objects/MooseFemale/12959_Moose_Female_v1_l3.obj",
+             "resources/assets/Objects/MooseFemale/12959_Moose_Female_diff.jpg");
+  duck.load("resources/assets/Objects/Duck/12248_Bird_v1_L2.obj",
+            "resources/assets/Objects/Duck/12248_Bird_v1_diff.jpg");
+}
+
+void Game::loadTerrain() {
+  terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
+  terrain.loadSkybox();
+}
+
+void Game::loadShaders() {
+  shader = Shader("../resources/shaders/vertex.vert", "../resources/shaders/fragment.frag");
+  skyboxShader = Shader("../resources/shaders/skybox/skybox.vert", "../resources/shaders/skybox/skybox.frag");
+  text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
+  text.load("resources/fonts/ocraext.TTF", 24);
 }
 
 void Game::setTrees() {

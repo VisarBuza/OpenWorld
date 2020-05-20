@@ -22,10 +22,6 @@ target_sources(
     ${CMAKE_CURRENT_LIST_DIR}/src/rendering/text_renderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/game_object.h
     ${CMAKE_CURRENT_LIST_DIR}/src/game_object.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/eagle.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/eagle.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/include/moose.h
-    ${CMAKE_CURRENT_LIST_DIR}/src/moose.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/terrain.h
     ${CMAKE_CURRENT_LIST_DIR}/src/terrain.cpp
     ${CMAKE_CURRENT_LIST_DIR}/include/route_planner.h

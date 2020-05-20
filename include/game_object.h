@@ -27,7 +27,6 @@ class GameObject {
   void rotate();
 
  public:
-  GameObject(int id, std::string modelPath, std::string texturePath, glm::vec3 position);
   virtual void draw(Shader shader) = 0;
   virtual void update(float dt) = 0;
 
