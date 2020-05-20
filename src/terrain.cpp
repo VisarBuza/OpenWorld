@@ -220,8 +220,8 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
 void Terrain::update(float dt) {
   time += dt;
   blendFactor = glm::sin(time / 8) / 2 + 0.5;
-  ambient = glm::vec3((1 - blendFactor) / 3, 0.1f, blendFactor / 2);
-  diffuse = glm::vec3((1 - blendFactor)/ 10);
+  ambient = glm::vec3((1 - blendFactor) / 4, 0.1f, blendFactor / 2);
+  diffuse = glm::vec3((1 - blendFactor) * 0.4);
   specular = glm::vec3(1 - blendFactor);
   direction = glm::vec3(0.0f, glm::sin(time / 8) , glm::cos(time / 8));
 }

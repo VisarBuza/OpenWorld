@@ -148,7 +148,7 @@ void Game::drawLamps() {
   for(auto &pos : lampPos) {
     lamp.draw(pos, 0.6, 0, shader);
     if (index < 10) {
-      shader.setPointLights(glm::vec3(pos.x, pos.y + 3, pos.z), glm::vec3(1.0, 0.2, 0.0), index++);
+      shader.setPointLights(glm::vec3(pos.x, pos.y + 0.5, pos.z), glm::vec3(index / 10, 1 - (index / 10), 0.0), index++);
     } 
     if (index == 10) {
       break;
