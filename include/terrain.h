@@ -30,6 +30,8 @@ class Terrain {
   void drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection);
   void update(float dt);
 
+  float getHeight(float x, float z);
+
  private:
   unsigned int vbo{};
   unsigned int vao{};
@@ -44,7 +46,7 @@ class Terrain {
   int index_count;
   std::vector<Vertex> vertices{};
   std::vector<unsigned> indices{};
-  float heightData[108][108];
+  float *heightData = new float[1081 * 1081];
   float rotation = 0;
   float time = 0;
   float blendFactor = 0;

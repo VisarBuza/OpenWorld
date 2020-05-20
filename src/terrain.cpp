@@ -82,6 +82,7 @@ Terrain::~Terrain() noexcept
   glDeleteBuffers(1, &vbo);
   glDeleteBuffers(1, &ebo);
   glDeleteVertexArrays(1, &vao);
+  // delete[] heightData;
 }
 
 void Terrain::load(const char *file, const char *textureFile) {
@@ -93,19 +94,22 @@ void Terrain::load(const char *file, const char *textureFile) {
 void Terrain::readHeightMap(const char *file) {
   int width, height, channels;
   unsigned char *image = stbi_load(file, &width, &height, &channels, STBI_rgb);
-
+  
   int offset = 0;
   for (int z = 0; z < height; z++) {
     for (int x = 0; x < width; x++) {
-      int index = (x + (z * height)) * 3;
-      float yHeight = calculateHeight((int)image[index]);
+      int index = (x + (z * height));
+      float yHeight = calculateHeight((int)image[index * 3]);
       
+      if (index < 1081 * 1081) {
+        heightData[index] = yHeight;
+      }
 
       vertices.push_back({});
       auto &vertex = vertices.back();
       vertex.position = glm::vec3(x - 540, yHeight, z - 540);
       vertex.normals = calculateNormal(x, z, image);
-      vertex.texcoord = glm::vec2(((int)image[index])/ 255.0, 0);
+      vertex.texcoord = glm::vec2(((int)image[index * 3])/ 255.0, 0);
     }
   }
 
@@ -224,6 +228,16 @@ void Terrain::update(float dt) {
   diffuse = glm::vec3(1 - blendFactor);
   specular = glm::vec3(1 - blendFactor);
   direction = glm::vec3(0.0f, glm::sin(time / 8) , glm::cos(time / 8));
+}
+
+float Terrain::getHeight(float x, float z) {
+  int tempX = (int)floor(x);
+  int tempZ = (int)floor(z);
+  int index = (tempX + 540 + (tempZ + 540  * 1081)); 
+  if (index < 1081 * 1081 && index >= 0) {
+    return heightData[index];
+  }
+  return 0;
 }
 
 glm::vec3 Terrain::calculateNormal(int x, int z, unsigned char* image) {

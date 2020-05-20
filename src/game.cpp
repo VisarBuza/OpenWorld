@@ -9,7 +9,7 @@ void Game::init() {
   player.load("resources/assets/Objects/Deer1/12961_White-Tailed_Deer_v1_l2.obj",
               "resources/assets/Objects/Deer1/12961_White-TailedDeer_diffuse.jpg");
 
-  terrain.load("resources/assets/HeightMaps/Randsf_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
+  terrain.load("resources/assets/HeightMaps/Randsf_HeightMapLow.png", "resources/assets/Textures/terrain.jpeg");
   terrain.loadSkybox();
   score = 0;
 }
@@ -37,7 +37,8 @@ void Game::render() {
   setLighting();
   setUpTransformations();
   terrain.draw(shader);
-  player.draw(glm::vec3(0.0f, 10.0f, -3.0f), .05, -90, shader);
+  float temp = terrain.getHeight(0, -3);
+  player.draw(glm::vec3(0.0f, temp, -3.0f), .05, -90, shader);
   auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
   terrain.drawSkybox(skyboxShader, camera.GetFirstPersonView(), projection);
 }
