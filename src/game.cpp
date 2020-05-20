@@ -7,10 +7,12 @@ void Game::init() {
   skyboxShader = Shader("../resources/shaders/skybox/skybox.vert", "../resources/shaders/skybox/skybox.frag");
   text = TextRenderer(Config::SCR_WIDTH, Config::SCR_HEIGHT);
   text.load("resources/fonts/ocraext.TTF", 24);
+  lamp.load("resources/assets/Objects/Lamp/lamp.obj", "resources/assets/Objects/Lamp/lamp.png");
   tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj", "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
   terrain.load("resources/assets/HeightMaps/Trondheim_HeightMap.png", "resources/assets/Textures/terrain.jpeg");
   terrain.loadSkybox();
   setTrees();
+  setLamps();
   score = 0;
 }
 
@@ -38,6 +40,7 @@ void Game::render() {
   setUpTransformations();
   terrain.draw(shader);
   drawTrees();
+  drawLamps();
   auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
   terrain.drawSkybox(skyboxShader, camera.GetFirstPersonView(), projection);
 }
@@ -100,31 +103,55 @@ void Game::checkCollision(float dt) {
   // }
 }
 
-void Game::drawPlayer() {
-  if (view != FIRST_PERSON) {
-    player.draw(camera.Position, 0.06, 0, shader);
-  }
-}
 
 void Game::setTrees() {
-  int count = 100;
   int z = -400;
   int x = -400;
   while (z < 400) {
-    x = -300;
+    x = -400;
     while (x < 400) {
       float height = terrain.getHeight(x, z);
       if (height > -35 && height < -5) {
         treePos.push_back(glm::vec3(x, height, z));
       }
-      x += 40;
+      x += 50;
     }
-    z += 40;
+    z += 50;
+  }
+}
+
+void Game::setLamps() {
+  int z = -500;
+  int x = -500;
+  int index = 0;
+  while (z < 500) {
+    x = -500;
+    while (x < 500) {
+      float height = terrain.getHeight(x, z);
+      if (height > -35 && height < -5) {
+        lampPos.push_back(glm::vec3(x, height, z));
+      }
+      x += 100;
+    }
+    z += 100;
   }
 }
 
 void Game::drawTrees() {
   for(auto &pos : treePos) {
     tree.draw(pos, 0.03, -90, shader);
+  }
+}
+
+void Game::drawLamps() {
+  int index = 0;
+  for(auto &pos : lampPos) {
+    lamp.draw(pos, 0.6, 0, shader);
+    if (index < 10) {
+      shader.setPointLights(glm::vec3(pos.x, pos.y + 3, pos.z), glm::vec3(1.0, 0.2, 0.0), index++);
+    } 
+    if (index == 10) {
+      break;
+    }
   }
 }

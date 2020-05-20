@@ -209,8 +209,8 @@ class Shader {
     setVec3("pointLights[" + std::to_string(index) + "].diffuse", color);
     setVec3("pointLights[" + std::to_string(index) + "].specular", glm::vec3(0.8f));
     setFloat("pointLights[" + std::to_string(index) + "].constant", 1.0f);
-    setFloat("pointLights[" + std::to_string(index) + "].linear", 0.22);
-    setFloat("pointLights[" + std::to_string(index) + "].quadratic", 0.20);
+    setFloat("pointLights[" + std::to_string(index) + "].linear", 0.01);
+    setFloat("pointLights[" + std::to_string(index) + "].quadratic", 0.002);
   }
 
  private:

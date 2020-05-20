@@ -45,7 +45,7 @@ class Game {
     void renderEndScreen();
   private:
     int view = 0;
-    Model player;
+    Model lamp;
     Model tree;
     std::vector<GameObject> objects;
     Terrain terrain;
@@ -58,8 +58,11 @@ class Game {
     void checkCollision(float dt);
     void drawPlayer();
     void drawTrees();
+    void drawLamps();
     void setTrees();
+    void setLamps();
     std::vector<glm::vec3> treePos;
+    std::vector<glm::vec3> lampPos;
 };
 
 #endif

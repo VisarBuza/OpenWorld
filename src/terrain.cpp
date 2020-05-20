@@ -164,7 +164,7 @@ void Terrain::draw(Shader shader) {
   shader.setDirLight(direction, ambient, diffuse, specular);
   shader.setMat4("model", model);
   shader.setMat3("normal_matrix", normal_matrix);
-  shader.setFloat("density", blendFactor  * 7 /1000);
+  shader.setFloat("density", blendFactor  * 7 / 1000);
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -195,13 +195,14 @@ void Terrain::drawSkybox(Shader shader, glm::mat4 view, glm::mat4 projection) {
   glDepthMask(GL_FALSE);
   glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
   shader.use();
-  shader.setInt("skybox", 0);
-  shader.setInt("skybox2", 1);
-  shader.setVec3("fogColor", glm::vec3(0.5f));
   view = glm::mat4(glm::mat3(view)); // remove translation from the view matrix
   view = glm::rotate(view, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
   shader.setMat4("view", view);
   shader.setMat4("projection", projection);
+  shader.setInt("skybox", 0);
+  shader.setInt("skybox2", 1);
+  shader.setVec3("fogColor", glm::vec3(0.5f));
+  shader.setFloat("blendFactor", blendFactor);
   rotation += 0.03;
   if (rotation >= 360) rotation = 0;
   // skybox cube
@@ -220,7 +221,7 @@ void Terrain::update(float dt) {
   time += dt;
   blendFactor = glm::sin(time / 8) / 2 + 0.5;
   ambient = glm::vec3((1 - blendFactor) / 3, 0.1f, blendFactor / 2);
-  diffuse = glm::vec3(1 - blendFactor);
+  diffuse = glm::vec3((1 - blendFactor)/ 10);
   specular = glm::vec3(1 - blendFactor);
   direction = glm::vec3(0.0f, glm::sin(time / 8) , glm::cos(time / 8));
 }

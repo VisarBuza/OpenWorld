@@ -38,7 +38,7 @@ struct SpotLight {
 };
 
 #define NR_GHOSTS 4
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 10
 
 /** Inputs */    
 layout(location = 0) in vec3 normal;
@@ -63,9 +63,9 @@ void main()
   vec3 viewDir = normalize(-fragPos);
 
   vec3 result = CalculateDirLight(dirLight, norm, viewDir);
-  // for(int i = 0; i < NR_GHOSTS; i++){  
-  //   result += CalculatePointLight(pointLights[i], norm, fragPos, viewDir);
-  // }
+  for(int i = 0; i < NR_POINT_LIGHTS; i++){  
+    result += CalculatePointLight(pointLights[i], norm, fragPos, viewDir);
+  }
   result += CalculateSpotLight(spotLight, norm, fragPos, viewDir);
 
   
