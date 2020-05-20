@@ -132,11 +132,11 @@ void Model::load(const std::string &filepath_obj, const std::string &diffuse_pat
   GFX_INFO("Loaded model %s (%u vertices).", filepath_obj.c_str(), out_vertices.size());
 }
 
-void Model::draw(glm::vec3 position, float scale, float rotation, Shader shader)
+void Model::draw(glm::vec3 position, float scale, float rotation, glm::vec3 axis, Shader shader)
 {
   auto model = glm::translate(glm::mat4(1.f), position);
   model = glm::scale(model, glm::vec3(scale));
-  model = glm::rotate(model, glm::radians(rotation), glm::vec3(1.0f, 0.0f, 0.0f));
+  model = glm::rotate(model, glm::radians(rotation), axis);
   auto normal_matrix = glm::mat3(model);
 
   shader.setMat4("model", model);

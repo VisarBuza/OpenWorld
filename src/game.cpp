@@ -8,12 +8,14 @@ void Game::init() {
   loadTerrain();
   setTrees();
   setLamps();
+  setDucks();
   score = 0;
 }
 
 void Game::update(float dt) {
   terrain.update(dt);
   camera.Position.y = terrain.getHeight(camera.Position.x, camera.Position.z) + 2;
+  eagle.update(dt);
 }
 
 void Game::processInput(float dt) {
@@ -38,8 +40,11 @@ void Game::render() {
   if (view != FIRST_PERSON) {
     player.draw(
         glm::vec3(camera.Position.x, terrain.getHeight(camera.Position.x, camera.Position.z), camera.Position.z), 0.2,
-        0, shader);
+        0, glm::vec3(1.0, 0.0, 0.0), shader);
   }
+  eagle.draw(shader);
+  moose.draw(glm::vec3(300, terrain.getHeight(300, 200), 200), 1, -90, glm::vec3(1.0, 0.0, 0.0), shader);
+  drawDucks();
   drawTrees();
   drawLamps();
   auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
@@ -100,7 +105,9 @@ void Game::loadModels() {
   tree.load("resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_L3b.obj",
             "resources/assets/Objects/PineTree2/10447_Pine_Tree_v1_Diffuse.jpg");
   player.load("resources/assets/Objects/Player/person.obj", "resources/assets/Objects/Player/playerTexture.png");
-  eagle.load("resources/assets/Objects/Eagle/Eagle02.obj", "resources/assets/Objects/Eagle/Eagle02.png");
+  eagle.model.load("resources/assets/Objects/Eagle/Eagle02.obj", "resources/assets/Objects/Eagle/Eagle02.png");
+  eagle.position = glm::vec3(0, 20, 0);
+  eagle.scale = 3.0;
   moose.load("resources/assets/Objects/MooseFemale/12959_Moose_Female_v1_l3.obj",
              "resources/assets/Objects/MooseFemale/12959_Moose_Female_diff.jpg");
   duck.load("resources/assets/Objects/Duck/12248_Bird_v1_L2.obj",
@@ -126,12 +133,12 @@ void Game::setTrees() {
     x = -400;
     while (x < 400) {
       float height = terrain.getHeight(x, z);
-      if (height > -35 && height < -5) {
+      if (height > -35 && height < -10) {
         treePos.push_back(glm::vec3(x, height, z));
       }
-      x += 50;
+      x += 30;
     }
-    z += 50;
+    z += 30;
   }
 }
 
@@ -152,16 +159,39 @@ void Game::setLamps() {
   }
 }
 
+void Game::setDucks() {
+  int z = -500;
+  int x = -500;
+  int index = 0;
+  while (z < 500) {
+    x = -500;
+    while (x < 500) {
+      float height = terrain.getHeight(x, z);
+      if (height <= -36) {
+        duckPos.push_back(glm::vec3(x, height - 1.5, z));
+      }
+      x += 90;
+    }
+    z += 90;
+  }
+}
+
 void Game::drawTrees() {
   for (auto &pos : treePos) {
-    tree.draw(pos, 0.01, -90, shader);
+    tree.draw(pos, 0.005, -90, glm::vec3(1.0, 0.0, 0.0), shader);
+  }
+}
+
+void Game::drawDucks() {
+  for (auto &pos : duckPos) {
+    duck.draw(pos, 0.1, -90, glm::vec3(1.0, 0.0, 0.0), shader);
   }
 }
 
 void Game::drawLamps() {
   int index = 0;
   for (auto &pos : lampPos) {
-    lamp.draw(pos, 0.3, 0, shader);
+    lamp.draw(pos, 0.3, 0, glm::vec3(1.0, 0.0, 0.0), shader);
     if (index < 10) {
       shader.setPointLights(glm::vec3(pos.x, pos.y + 0.5, pos.z), glm::vec3(index / 10, 1 - (index / 10), 0.0),
                             index++);

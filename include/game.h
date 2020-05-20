@@ -30,6 +30,35 @@ enum CameraState {
   BIRD_VIEW
 };
 
+struct Eagle {
+  glm::vec3 position{};
+  glm::vec3 front = glm::vec3(0.0, 0.0, 1.0);
+  glm::vec3 direction{};
+  float speed;
+  float scale = 3;
+  float rotation = 0;
+  float angle = 0;
+  float radius = 200;
+  float fluctuation = 5;
+  float altitude = 20;
+  Model model;
+  void draw(Shader shader) {
+    model.draw(position, scale, glm::degrees(rotation), glm::vec3(0.05, 1.0f, 0.0f), shader);
+  }
+  void update(float dt) {
+    angle += dt;
+    float newX = sin(angle / 3) * radius;
+    float newY = sin(angle / 3) * 10;
+    float newZ = cos(angle / 3) * radius;
+    direction = glm::normalize(glm::vec3(newX, 0, newZ) - glm::vec3(position.x, 0, position.z));
+    rotation += glm::acos(glm::dot(front, direction));
+    front = direction;
+    position.x = newX;
+    position.y = altitude + newY;
+    position.z = newZ;
+  }
+};
+
 class Game {
   public:
     bool keys[1024];
@@ -50,7 +79,7 @@ class Game {
     Model tree;
     Model player;
     Model duck;
-    Model eagle;
+    Eagle eagle;
     Model moose;
     std::vector<GameObject> objects;
     Terrain terrain;
@@ -69,10 +98,13 @@ class Game {
     void drawPlayer();
     void drawTrees();
     void drawLamps();
+    void drawDucks();
+    void setDucks();
     void setTrees();
     void setLamps();
     std::vector<glm::vec3> treePos;
     std::vector<glm::vec3> lampPos;
+    std::vector<glm::vec3> duckPos;
 };
 
 #endif
