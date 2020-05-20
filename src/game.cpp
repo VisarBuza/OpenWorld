@@ -42,10 +42,14 @@ void Game::render() {
   setLighting();
   setUpTransformations();
   terrain.draw(shader);
-  player.draw(glm::vec3(0, terrain.getHeight(0, 0), 0), 0.2, 0, shader);
+  if (view != FIRST_PERSON) {
+    player.draw(
+        glm::vec3(camera.Position.x, terrain.getHeight(camera.Position.x, camera.Position.z), camera.Position.z), 0.2,
+        0, shader);
+  }
   drawTrees();
   drawLamps();
-  auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
+  auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
   terrain.drawSkybox(skyboxShader, camera.GetFirstPersonView(), projection);
 }
 
@@ -63,7 +67,7 @@ void Game::renderEndScreen() {
 }
 
 void Game::setUpTransformations() {
-  auto projection = glm::perspective(glm::radians(50.f), 16.f / 9.f, 0.01f, 650.f);
+  auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
   auto lookAt = glm::mat4(1.0f);
 
   switch (view) {

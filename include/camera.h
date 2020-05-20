@@ -39,6 +39,7 @@ class Camera {
   // Camera options
   float MovementSpeed;
   float MouseSensitivity;
+  float zoom = 45.0f;
 
   // Constructor with vectors
   Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW,
@@ -67,7 +68,7 @@ class Camera {
 
   // Third person view
   glm::mat4 GetThirdPersonView() {
-    return glm::lookAt(glm::vec3(Position.x - (Front.x), 1.0, Position.z - Front.z), Position + Front, Up);
+    return glm::lookAt(glm::vec3(Position.x - (4 * Front.x), Position.y + 0.5, Position.z - (4 * Front.z)), Position + Front, Up);
   }
 
   // Birds eye view
