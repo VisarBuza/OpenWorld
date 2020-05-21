@@ -89,7 +89,7 @@ class Camera {
       running = true;
     }
     if (input == STOP_RUN && running) {
-      MovementSpeed /= 1.7;
+      MovementSpeed /= 3.7;
       running = false;
     } 
   }
@@ -117,6 +117,15 @@ class Camera {
     // Update Front, Right and Up Vectors using the updated Euler angles
     updateCameraVectors();
   }
+
+  void ProcessMouseScroll(float yoffset)
+    {
+        zoom -= (float)yoffset / 4;
+        if (zoom < 1.0f)
+            zoom = 1.0f;
+        if (zoom > 45.0f)
+            zoom = 45.0f; 
+    }
 
  private:
   // Default mouse position values
