@@ -5,6 +5,7 @@ For more information check resources/assets/
 ![picture](resources/images/player.png)
 ![picture](resources/images/fog.png)
 ![picture](resources/images/day.png)
+![picture](resources/images/deer.png)
 ## How to setup
 
 Make sure you have [cmake](https://cmake.org/) version 3.14 or later installed.
@@ -77,6 +78,8 @@ Also there is another light source, a spotlight which is the players flashlight 
 [3.1]() - The eagle flies in the air space and has some fluctuation on altitude bus mostly circles in the xOz plane. There is somewhat of a collision detection, the objects cannot go throught ground, they are all pulled by the gravity and locked at terrain height.
 
 ## Future Work
+
+Use the normal maps for producing more realistic scenes.
 
 There is te AI class from Assignment 2 which uses A* searching algorithm which works perfectly with the ghosts in assignment 2. I did not have time to use that in the exam. But i want to use that so deers can use that algorithm to move around the map and go after some food around the map.
 

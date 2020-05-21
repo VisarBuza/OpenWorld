@@ -49,8 +49,8 @@ void Game::render() {
   }
   eagle.draw(shader);
   moose.draw(glm::vec3(300, terrain.getHeight(300, 200), 200), 1, -90, glm::vec3(1.0, 0.0, 0.0), shader);
-  // drawDucks();
-  // drawDeers();
+  drawDucks();
+  drawDeers();
   drawTrees();
   drawLamps();
   auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
@@ -168,12 +168,12 @@ void Game::setLamps() {
 }
 
 void Game::setDucks() {
-  int z = -500;
-  int x = -500;
+  int z = -400;
+  int x = -400;
   int index = 0;
-  while (z < 500) {
-    x = -500;
-    while (x < 500) {
+  while (z < 400) {
+    x = -400;
+    while (x < 400) {
       float height = terrain.getHeight(x, z);
       if (height <= -36) {
         duckPos.push_back(glm::vec3(x, height - 0.2, z));
@@ -185,19 +185,19 @@ void Game::setDucks() {
 }
 
 void Game::setDeers() {
-  int z = -500;
-  int x = -500;
+  int z = -100;
+  int x = -100;
   int index = 0;
-  while (z < 500) {
-    x = -500;
-    while (x < 500) {
+  while (z < 100) {
+    x = -100;
+    while (x < 100) {
       float height = terrain.getHeight(x, z);
       if (height > -35 && height < -5) {
         deerPos.push_back(glm::vec3(x, height - 0.2, z));
       }
-      x += 90;
+      x += 40;
     }
-    z += 90;
+    z += 40;
   }
 }
 
@@ -236,8 +236,8 @@ void Game::drawLamps() {
 void Game::updateDeers(float dt) {
   angle += dt;
   for (auto &pos : deerPos) {
-    pos.x += cos(angle / 20) * 3;
-    pos.z += sin(angle / 20) * 3;
+    pos.x += cos(angle / 20) * 100;
+    pos.z += sin(angle / 20) * 100;
     pos.y = terrain.getHeight(pos.x, pos.z);
   }
 }
