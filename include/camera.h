@@ -16,7 +16,7 @@ enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, RUN, STOP_RUN };
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 30.5f;
+const float SPEED = 5.5f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -85,7 +85,7 @@ class Camera {
     if (input == LEFT) Position -= Right * velocity;
     if (input == RIGHT) Position += Right * velocity;
     if (input == RUN && !running) {
-      MovementSpeed *= 1.7;
+      MovementSpeed *= 3.7;
       running = true;
     }
     if (input == STOP_RUN && running) {

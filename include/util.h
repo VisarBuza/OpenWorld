@@ -88,23 +88,12 @@ void clean_up(GLFWwindow* window) {
   glfwTerminate();
 }
 
-void draw_gui() {
-  if (!Config::devMode) {
-    return;
-  }
+void draw_gui(float &f) {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
   ImGui::Begin("Dev Menu");
-  if (ImGui::Button("Enable/Disable Flight")) {
-    Config::flightEnabled = !Config::flightEnabled;
-  }
-  if (ImGui::Button("Buttons"))
-  {
-  }
-  if (ImGui::Button("Not Implemented"))
-  {
-  }
+  ImGui::SliderFloat("Day and night speed", &f, 0.0f, 1.0f);
   ImGui::End();
 
   ImGui::Render();

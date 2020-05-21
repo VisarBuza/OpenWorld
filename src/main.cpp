@@ -30,7 +30,6 @@ int main(int argc, char *argv[]) {
   initialize_gui(window);
   
   game.init();
-
   // render loop
   while (!glfwWindowShouldClose(window)) {
     float currentFrame = glfwGetTime();
@@ -43,7 +42,6 @@ int main(int argc, char *argv[]) {
       game.processInput(deltaTime);
       game.update(deltaTime);
       game.render();
-      draw_gui();
     } else {
       game_menu(game, window);
     }

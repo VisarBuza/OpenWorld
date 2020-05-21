@@ -13,7 +13,6 @@
 #include "route_planner.h"
 #include "model.h"
 #include "camera.h"
-#include "game_object.h"    
 #include "terrain.h"
 
 enum GameState {
@@ -75,13 +74,15 @@ class Game {
     void renderEndScreen();
   private:
     int view = 0;
+    bool free = false;
+    float angle = 0;
     Model lamp;
     Model tree;
     Model player;
     Model duck;
+    Model deer;
     Eagle eagle;
     Model moose;
-    std::vector<GameObject> objects;
     Terrain terrain;
     
     Shader shader;
@@ -95,16 +96,20 @@ class Game {
     void loadTerrain();
     void loadShaders();
     void checkCollision(float dt);
+    void updateDeers(float dt);
     void drawPlayer();
     void drawTrees();
     void drawLamps();
     void drawDucks();
+    void drawDeers();
+    void setDeers();
     void setDucks();
     void setTrees();
     void setLamps();
     std::vector<glm::vec3> treePos;
     std::vector<glm::vec3> lampPos;
     std::vector<glm::vec3> duckPos;
+    std::vector<glm::vec3> deerPos;
 };
 
 #endif
