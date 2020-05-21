@@ -49,8 +49,8 @@ void Game::render() {
   }
   eagle.draw(shader);
   moose.draw(glm::vec3(300, terrain.getHeight(300, 200), 200), 1, -90, glm::vec3(1.0, 0.0, 0.0), shader);
-  drawDucks();
-  drawDeers();
+  // drawDucks();
+  // drawDeers();
   drawTrees();
   drawLamps();
   auto projection = glm::perspective(camera.zoom, 16.f / 9.f, 0.01f, 650.f);
