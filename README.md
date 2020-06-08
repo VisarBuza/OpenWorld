@@ -2,6 +2,7 @@
 
 This project was made for take home exam in the course Graphics Programming - IMT2531.
 For more information check resources/assets/
+Video demonstration https://www.youtube.com/watch?v=jwV3vtzYMNA&t=2s
 ![picture](resources/images/player.png)
 ![picture](resources/images/fog.png)
 ![picture](resources/images/day.png)
